@@ -1,43 +1,46 @@
--- Namespace the Person class
-local PersonModule = {}
+-- Declare Person class
+local Person = {}
+Person.__index = Person -- Set up Meta indexing
 
 -- Person Definition / Constructor
-function PersonModule.NewPerson(name, age)
-	-- Create object
-    local person = {}
+function Person.new(name, age)
+	-- Create meta table
+	local self = setmetatable({}, Person)
 
     -- Initialize object
-    person.name = name
-    person.age = age
-
-    -- Define object methods
-	function person:getName()
-		return person.name
-	end
-
-	function person:sayHello()
-		print(string.format("Hello. My name is %s. What's yours?", person.name))
-		you = io.read()
-		if you ~= "" then
-			print("It's nice to meet you "..you..".")
-			person.friend = you
-		else
-			print("Hello, anyway.")
-			person.friend = false
-		end
-	end
-
-	function person:sayGoodbye()
-		if person.friend then
-			io.write("Goodbye "..person.friend..".\n")
-		else
-			io.write("Goodbye, friend.\n")
-		end
-	end
+    self.name = name
+    self.age = age
 
 	-- Return instantiated object
-    return person
+    return self
+end
+
+-- Define object methods
+-- Methods accept reference to self
+-- as (secret)first argument
+function Person.getName(self)
+	return self.name
+end
+
+function Person.sayHello(self)
+	print(string.format("Hello. My name is %s. What's yours?", self.name))
+	you = io.read()
+	if you ~= "" then
+		print("It's nice to meet you "..you..".")
+		self.friend = you
+	else
+		print("Hello, anyway.")
+		self.friend = false
+	end
+end
+
+function Person.sayGoodbye(self)
+	if self.friend then
+		io.write("Goodbye "..self.friend..".\n")
+	else
+		io.write("Goodbye, friend.\n")
+	end
 end
 
 -- Return class to Main
-return PersonModule
+return Person
